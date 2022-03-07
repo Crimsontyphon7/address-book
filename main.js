@@ -1,6 +1,7 @@
 //get ten users from api
 
-fetch('https://randomuser.me/api/?results=10')
+function getAdress(fetch, id) {
+fetch('https://randomuser.me/api/?results=10' +id)
     .then(function (response) {
         //extract the json from the response
         console.log("repsonse status:", response.status)
@@ -10,6 +11,7 @@ fetch('https://randomuser.me/api/?results=10')
         console.log("response payload:", json)
         processJson(json)
     })
+}
 
 let processJson = (json) => {
     //sort json alphabetically
@@ -25,7 +27,8 @@ let processJson = (json) => {
         let contact = sortedJson[i];
         processContact(contact);
     }
-}
+} 
+
 
 // loop through the result array and process one contact at a time 
 
@@ -81,3 +84,44 @@ li.appendChild(button);
 
 contactList.appendChild(li);
 }
+
+
+// create an overview of unit tests
+// create three unit tests 
+// mistyped address?
+
+describe('processContact', () => {
+    it('calls fetch with the correct url', () => {
+        const fakeFetch = url  => {
+            assert(
+                url ===
+                'https://randomuser.me/api/?results=10'
+            )
+            return new Promise(function(resolve) {
+
+            })
+        }
+        processContact(fakeFetch)
+    })
+    it ('parses the response of fetch corretly', (done) => {
+        const fakeFetch = url => {
+            return Promise.resolve({
+                json: () => Promise.resolve({
+                    results: [
+                        {
+                            name: 'Alice Lewis',
+                            email: 'alice.lewis@example.com'
+                            
+                        }
+                    ]
+                })
+            })
+        }
+        processContact (fakeFetch, 12345)
+        .then(result => {
+            assert (result.name === 'Alice Lewis')
+        done ()
+            })
+    })
+
+})
